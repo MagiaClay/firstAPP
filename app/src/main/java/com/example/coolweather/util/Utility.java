@@ -5,13 +5,15 @@ import android.text.TextUtils;
 import com.example.coolweather.db.City;
 import com.example.coolweather.db.County;
 import com.example.coolweather.db.Province;
+import com.example.coolweather.gson.Weather;
+import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Utility {
-    //工具类，处理返回的JSON数据
+    //工具类，处理返回的JSON数据,自己写的接口
     public static  boolean handleProvinceResponse(String response){
         if (!TextUtils.isEmpty(response)){//内容不为空？
             try {
@@ -68,5 +70,18 @@ public class Utility {
             }
         }
         return false;
+    }
+
+    //将返回的数据解析成Weather实体类
+    public static Weather handleWeatherResponse(String response){
+        try {
+            JSONObject jsonObject=new JSONObject(response);
+            JSONArray jsonArray=jsonObject.getJSONArray("HeWeather");//和风天气主接口
+            String weatherContent =jsonArray.getJSONObject(0).toString();//第一个基础数据，全部保存到weatherContent
+            return new Gson().fromJson(weatherContent,Weather.class);//MARK：反射获取实例,在之前已经用注释规定了其模式，所以可以直接生成
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
     }
 }
