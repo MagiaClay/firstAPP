@@ -6,6 +6,15 @@ public class Province extends LitePalSupport {
     private int id;
     private  String provinceName;
     private  int provinceCode;//省的代号
+    private  int provinceid;
+
+    public int getProvinceid() {
+        return provinceid;
+    }
+
+    public void setProvinceid(int provinceId) {
+        this.provinceid = provinceId;
+    }
 
     public int getId() {
         return id;

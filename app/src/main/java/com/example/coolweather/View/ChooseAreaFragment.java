@@ -113,7 +113,7 @@ public class ChooseAreaFragment extends Fragment {
     private void queryCities(){
         titleText.setText(selectedProvince.getProvinceName());
         backButton.setVisibility(View.VISIBLE);
-        cityList=LitePal.where("provinceid = ?",String.valueOf(selectedProvince.getId())).find(City.class);//反射查询返回实例
+        cityList=LitePal.where("provincedid = ?",String.valueOf(selectedProvince.getId())).find(City.class);//反射查询返回实例
         if (cityList.size()>0){
             dataList.clear();
             for (City city:cityList){
@@ -132,7 +132,7 @@ public class ChooseAreaFragment extends Fragment {
     private void queryCounties(){
         titleText.setText(selectedCity.getCityName());
         backButton.setVisibility(View.VISIBLE);
-        countyList=LitePal.where("cityid = ?",String.valueOf(selectedCity.getId())).find(County.class);//从数据库获得数据
+        countyList=LitePal.where("cityId = ?",String.valueOf(selectedCity.getId())).find(County.class);//从数据库获得数据
         if (cityList.size()>0){
             dataList.clear();
             for (County county:countyList){
