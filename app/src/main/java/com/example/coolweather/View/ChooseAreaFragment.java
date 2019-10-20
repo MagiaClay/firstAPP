@@ -1,10 +1,12 @@
 package com.example.coolweather.View;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,10 +17,13 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.coolweather.MainActivity;
 import com.example.coolweather.R;
+import com.example.coolweather.WeatherActivity;
 import com.example.coolweather.db.City;
 import com.example.coolweather.db.County;
 import com.example.coolweather.db.Province;
+import com.example.coolweather.gson.Weather;
 import com.example.coolweather.util.HttpUtil;
 import com.example.coolweather.util.Utility;
 
@@ -76,6 +81,13 @@ public class ChooseAreaFragment extends Fragment {
                 }else if (currentLevel==LEVEL_CITY){
                     selectedCity=cityList.get(position);
                     queryCounties();
+                }else if (currentLevel==LEVEL_CONTY){//如果点击具体的名称数
+                    String weatherId=countyList.get(position).getWeatherId();
+                    Intent intent=new Intent(getActivity(), WeatherActivity.class);
+                    Log.d("MainActivity",weatherId);
+                    intent.putExtra("weatherid",weatherId);
+                    startActivity(intent);
+                    getActivity().finish();
                 }
             }
         });
@@ -133,7 +145,7 @@ public class ChooseAreaFragment extends Fragment {
         titleText.setText(selectedCity.getCityName());
         backButton.setVisibility(View.VISIBLE);
         countyList=LitePal.where("cityId = ?",String.valueOf(selectedCity.getId())).find(County.class);//从数据库获得数据
-        if (cityList.size()>0){
+        if (countyList.size()>0){
             dataList.clear();
             for (County county:countyList){
                 dataList.add(county.getCountyName());
@@ -169,7 +181,7 @@ public class ChooseAreaFragment extends Fragment {
                 String reposeText=response.body().string();//获取返回的信息
                 boolean result=false;
                 if ("province".equals(type)){
-                    result= Utility.handleProvinceResponse(reposeText);//保存所有对应类型的数据
+                    result= Utility.handleProvinceResponse(reposeText);//保存所有对应类型的数据,顺带保存了对应的城市Id
                 }else if ("city".equals(type)){
                     result= Utility.handleCityResponse(reposeText,selectedProvince.getId());
                 }else if ("county".equals(type)){
